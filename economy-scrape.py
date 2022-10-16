@@ -13,18 +13,18 @@ lista_ids_total = ['ipca','inpc','ipca-15','ipp','custo-do-m','variacao-do-pib',
 lista_ids = ['ipca','inpc','ipca-15','ipp','custo-do-m','industria','comercio','servicos']
 
 #seleciona tabela de dados economicos
-element = driver.find_element(By.XPATH,'/html/body/main/section/div[2]/div[2]/div[1]')
+indicadores_economicos = driver.find_element(By.CLASS_NAME,'indicadores-table-container')
 
 #armazena todos elementos da coluna "Último" em um dicionário
 all_elements = {}
 for id in lista_ids:
-    all_elements[id] = element.find_element(By.ID,f'indicador-{id}').find_element(By.CLASS_NAME,"ultimo")
+    all_elements[id] = indicadores_economicos.find_element(By.ID,f'indicador-{id}').find_element(By.CLASS_NAME,"ultimo")
 
 #A partir da lista gerada anteriormente, gera novo dicionário no formato
 #{'Indicador economico':{
-#   'value': valor float
-#   'month': mês string
-#   'year': ano int
+#   'value': valor float,
+#   'month': mês string,
+#   'year': ano int,
 # }
 #}
 valores_porcent = {}
@@ -32,7 +32,7 @@ for id in all_elements:
     string_list = all_elements[id].text.split()
     id_dict = {}
     for i in range(3):
-        id_dict['value'] = float(string_list[0])
+        id_dict['value'] = float(string_list[0].replace(',','.'))
         id_dict['month'] = string_list[1]
         id_dict['year'] = int(string_list[2])
     valores_porcent[id] = id_dict
@@ -40,3 +40,4 @@ for id in all_elements:
 print(valores_porcent)
 #fecha navegador
 driver.close()
+
